@@ -15,11 +15,11 @@ class Stakan {
 
     private Figure nextFigure;
     private Figure curFigure;
+    private Color[] random = {Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
 
     Stakan(GdxTetris game){
         this.game = game;
         content = new Color[10][20];
-//        Color[] random = {Color.BLACK, Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
         for (int x = 0; x<10; x++)
             for (int y=0;y<20;y++)
                 content[x][y] = Color.BLACK;
@@ -27,6 +27,7 @@ class Stakan {
 
         nextFigure = new Figure(game);
         nextFigure.setCoords(10.5f,18);
+        nextFigure.color = random[MathUtils.random(4)];
         curFigure = new Figure(game);
         spawn(curFigure);
 
@@ -35,7 +36,7 @@ class Stakan {
     private void spawn(Figure figure){
         boolean firstEmpty = true;
         for (int i = 0; i < 4; i++)
-            if (figure.shape[0][i]==1)
+            if (figure.shape[i][0]==1)
                 firstEmpty = false;
 
         if (firstEmpty)
@@ -62,13 +63,14 @@ class Stakan {
     }
 
     void update(float delta) {
-        if (canMoveDown(curFigure,delta))
+        if (canMoveDown(curFigure,delta*3))
             curFigure.moveDown(delta*3 );
         else {
             freeze(curFigure);
             curFigure = nextFigure;
             spawn(curFigure);
             nextFigure = new Figure(game);
+            nextFigure.color = random[MathUtils.random(4)];
             nextFigure.setCoords(10.5f,18);
         }
     }
@@ -81,7 +83,7 @@ class Stakan {
         Gdx.app.log("figure",Arrays.deepToString(shape));
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (shape[j][i] == 1)
+                if (shape[j][i] == 1 && figY-j < 20 && figY-j >= 0)
                     content[figX+i][figY-j] = figure.color;
             }
         }
