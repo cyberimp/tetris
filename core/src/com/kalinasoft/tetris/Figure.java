@@ -9,7 +9,7 @@ public class Figure {
 
     private final GdxTetris game;
 
-    static int[][][] proto = {
+    private static int[][][] proto = {
             {
                     {0,0,0,0},
                     {0,1,1,0},
@@ -60,13 +60,13 @@ public class Figure {
             }
     };
 
-    public int[][] shape;
+    int[][] shape;
 
     Color color;
 
     float x,y;
 
-    public Figure(GdxTetris game){
+    Figure(GdxTetris game){
         this.game = game;
         shape = proto[MathUtils.random(6)];
 //        shape = proto[7];
@@ -85,7 +85,7 @@ public class Figure {
         return result;
     }
 
-    public void Draw(SpriteBatch batch) {
+    void draw(SpriteBatch batch) {
         batch.setColor(color);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -95,12 +95,12 @@ public class Figure {
         }
     }
 
-    public void setCoords(float x, float y) {
+    void setCoords(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public void moveDown(float delta) {
+    void moveDown(float delta) {
         this.y-=delta;
     }
 }

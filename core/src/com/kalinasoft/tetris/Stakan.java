@@ -2,7 +2,6 @@ package com.kalinasoft.tetris;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -20,7 +19,7 @@ class Stakan {
     Stakan(GdxTetris game){
         this.game = game;
         content = new Color[10][20];
-        Color[] random = {Color.BLACK, Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
+//        Color[] random = {Color.BLACK, Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
         for (int x = 0; x<10; x++)
             for (int y=0;y<20;y++)
                 content[x][y] = Color.BLACK;
@@ -29,11 +28,24 @@ class Stakan {
         nextFigure = new Figure(game);
         nextFigure.setCoords(10.5f,18);
         curFigure = new Figure(game);
-        curFigure.setCoords(3,20);
+        spawn(curFigure);
 
     }
 
-    void Draw(SpriteBatch batch){
+    private void spawn(Figure figure){
+        boolean firstEmpty = true;
+        for (int i = 0; i < 4; i++)
+            if (figure.shape[0][i]==1)
+                firstEmpty = false;
+
+        if (firstEmpty)
+            figure.setCoords(3,20);
+        else
+            figure.setCoords(3,20);
+
+    }
+
+    void draw(SpriteBatch batch){
         batch.setColor(Color.YELLOW);
         game.font.draw(batch,"NEXT",172,318);
         game.font.draw(batch,"SCORE: 1'000'000'000",0,350);
@@ -45,17 +57,17 @@ class Stakan {
                     batch.setColor(content[x][y]);
                     batch.draw(game.brick,x*16+2,y*16+2);
                 }
-                nextFigure.Draw(batch);
-                curFigure.Draw(batch);
+                nextFigure.draw(batch);
+                curFigure.draw(batch);
     }
 
-    public void update(float delta) {
+    void update(float delta) {
         if (canMoveDown(curFigure,delta))
             curFigure.moveDown(delta*3 );
         else {
             freeze(curFigure);
             curFigure = nextFigure;
-            curFigure.setCoords(3,20);
+            spawn(curFigure);
             nextFigure = new Figure(game);
             nextFigure.setCoords(10.5f,18);
         }
