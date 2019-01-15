@@ -95,7 +95,7 @@ class Stakan {
         int x = MathUtils.floor(figure.x);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (shape[j][i] == 1 && y-j < 0)
+                if (shape[j][i] == 1 && y-j < 0 && y-j>19)
                     return false;
                 if (shape[j][i] == 1 && content[x+i][y-j] != Color.BLACK)
                     return false;
