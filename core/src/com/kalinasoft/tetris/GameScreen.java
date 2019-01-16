@@ -15,8 +15,10 @@ public class GameScreen implements Screen, InputProcessor {
     private Viewport viewport;
 
     private Stakan stakan;
+    private GameOverBanner banner;
 
     private Music bgm;
+    private boolean isGameOver =false;
 
 
 
@@ -24,6 +26,7 @@ public class GameScreen implements Screen, InputProcessor {
     GameScreen(final GdxTetris game){
         this.game = game;
         stakan = new Stakan(game);
+        banner = new GameOverBanner(game);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 240, 360);
         viewport = new FitViewport(240, 360, camera);
@@ -44,9 +47,16 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+        if (!isGameOver)
+            isGameOver = stakan.update(delta);
+        else
+            banner.update(delta);
+
         game.batch.begin();
-        stakan.update(delta);
         stakan.draw(game.batch);
+
+        if (isGameOver)
+            banner.draw(game.batch);
         game.batch.end();
 
     }

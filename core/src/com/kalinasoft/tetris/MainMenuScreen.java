@@ -1,28 +1,21 @@
 package com.kalinasoft.tetris;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class MainMenuScreen implements Screen {
 
-    final GdxTetris game;
+    private final GdxTetris game;
     private final Stage stage;
-    private final Table table;
     private OrthographicCamera camera;
 
 
@@ -33,7 +26,7 @@ public class MainMenuScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-        table = new Table();
+        Table table = new Table();
         table.setFillParent(true);
         Label title = new Label("BRICKS",game.skin);
         TextButton newGame = new TextButton("New game", game.skin);
@@ -45,7 +38,6 @@ public class MainMenuScreen implements Screen {
                                     dispose();
                                 }
                             });
-//                game.setScreen(new GameScreen(game));
         TextButton hiScore = new TextButton("High score", game.skin);
         hiScore.addListener(new ChangeListener() {
             @Override

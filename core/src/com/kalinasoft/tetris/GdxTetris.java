@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GdxTetris extends Game {
-	public SpriteBatch batch;
-	public BitmapFont font;
-	public Skin skin;
+	SpriteBatch batch;
+	BitmapFont font;
+	Skin skin;
 
-	public Texture brick;
-	public Texture back;
+	Texture brick;
+	Texture back;
+	Texture gameover;
 
 	@Override
 	public void create () {
@@ -22,7 +23,8 @@ public class GdxTetris extends Game {
 		skin = new Skin(Gdx.files.internal("skin.json"));
 		back = new Texture("glass.png");
 		brick = new Texture("brick.png");
-
+		gameover = new Texture("gameover.png");
+		Gdx.input.setCatchBackKey(true);
 		this.setScreen(new MainMenuScreen(this));
 
 	}

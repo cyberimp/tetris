@@ -16,7 +16,7 @@ public class HighScoreScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
+//TODO: high score table
     }
 
     @Override

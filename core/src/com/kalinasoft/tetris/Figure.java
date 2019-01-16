@@ -1,6 +1,5 @@
 package com.kalinasoft.tetris;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -73,9 +72,9 @@ public class Figure {
         color = Color.BLUE;
     }
 
-    public void update(float milis,Stakan parent){
-
-    }
+//    public void update(float millis,Stakan parent){
+//
+//    }
 
     @Override
     public Figure clone() throws CloneNotSupportedException {
@@ -102,5 +101,18 @@ public class Figure {
 
     void moveDown(float delta) {
         this.y-=delta;
+    }
+
+    void spawn(){
+        boolean firstEmpty = true;
+        for (int i = 0; i < 4; i++)
+            if (shape[i][0]==1)
+                firstEmpty = false;
+
+        if (firstEmpty)
+            setCoords(3,20);
+        else
+            setCoords(3,19);
+
     }
 }
