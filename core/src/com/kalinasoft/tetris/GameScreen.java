@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen implements Screen{
     private final GdxTetris game;
     private final OrthographicCamera camera;
     private Viewport viewport;
@@ -19,6 +19,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     private Music bgm;
     private boolean isGameOver =false;
+
+    private InputHandler inputHandler;
 
 
 
@@ -32,11 +34,12 @@ public class GameScreen implements Screen, InputProcessor {
         viewport = new FitViewport(240, 360, camera);
         bgm = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         bgm.setLooping(true);
-        Gdx.input.setInputProcessor(this);
+        inputHandler = new InputHandler();
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(inputHandler);
         bgm.play();
 
     }
@@ -47,6 +50,13 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+        InputHandler.INPUT input = inputHandler.consume();
+        while(input!=null){
+            switch (input){
+                case LEFT: stakan.tryLeft();
+            }
+            input = inputHandler.consume();
+        }
         if (!isGameOver)
             isGameOver = stakan.update(delta);
         else
@@ -86,43 +96,4 @@ public class GameScreen implements Screen, InputProcessor {
         bgm.dispose();
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
 }

@@ -57,7 +57,7 @@ class Stakan {
      * @return true if game over
      */
     boolean update(float delta) {
-        if (canMoveDown(curFigure,delta*3))
+        if (canMoveDown(delta*3))
             curFigure.moveDown(delta*3 );
         else {
             if (!freeze(curFigure))
@@ -97,14 +97,13 @@ class Stakan {
 
     /**
      * Check if we can move this figure down
-     * @param figure figure to be checked
      * @param delta movement step
      * @return true if figure can be moved
      */
-    private boolean canMoveDown(Figure figure, float delta) {
-        final int[][] shape = figure.shape;
-        int y = MathUtils.floor(figure.y-delta);
-        int x = MathUtils.floor(figure.x);
+    private boolean canMoveDown(float delta) {
+        final int[][] shape = curFigure.shape;
+        int y = MathUtils.floor(curFigure.y-delta);
+        int x = MathUtils.floor(curFigure.x);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (shape[j][i] == 1 &&( y-j < 0 || y-j>19))
@@ -115,5 +114,29 @@ class Stakan {
             }
         }
         return true;
+    }
+
+    void tryLeft() {
+
+        boolean result = true;
+
+        final int[][] shape = curFigure.shape;
+        int y = MathUtils.floor(curFigure.y);
+        int x = MathUtils.floor(curFigure.x-1);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (shape[j][i] == 1 &&( x+i < 0||y-j<0 ||y-j>19)) {
+                    result = false;
+                    break;
+                }
+                if (shape[j][i] == 1 && content[x+i][y-j] != Color.BLACK)
+                    result = false;
+            }
+        }
+
+        if (result){
+            curFigure.x--;
+        }
+
     }
 }
