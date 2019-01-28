@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">Bricks</string>
+    <string name="signin_other_error">Google Play sign-in error — high score disabled</string>
 
 </resources>

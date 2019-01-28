@@ -9,13 +9,13 @@ import java.util.Arrays;
 
 class Stakan {
 
-    private Color content[][];
+    final private Color content[][];
 
     private final GdxTetris game;
 
     private Figure nextFigure;
     private Figure curFigure;
-    private Color[] random = {Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
+    final private Color[] random = {Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
 
     Stakan(GdxTetris game){
         this.game = game;
@@ -96,6 +96,28 @@ class Stakan {
     }
 
     /**
+     * Check collisions for every figure movement
+     * @param figure array for new figure morph
+     * @param x new x coordinate
+     * @param y new y coordinate
+     * @return true if figure will fit
+     */
+    private boolean figureCheck (int[][] figure, float x, float y){
+        int intY = MathUtils.floor(y);
+        int intX = MathUtils.floor(x);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (figure[j][i] == 1 &&( intX+i < 0|| intY-j<0 ||intY-j>19 ||intX+i>9))
+                    return false;//oh whatever, we crossed THE LINE
+
+                if (figure[j][i] == 1 && content[intX+i][intY-j] != Color.BLACK)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Check if we can move this figure down
      * @param delta movement step
      * @return true if figure can be moved
@@ -117,26 +139,24 @@ class Stakan {
     }
 
     void tryLeft() {
-
-        boolean result = true;
-
-        final int[][] shape = curFigure.shape;
-        int y = MathUtils.floor(curFigure.y);
-        int x = MathUtils.floor(curFigure.x-1);
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (shape[j][i] == 1 &&( x+i < 0||y-j<0 ||y-j>19)) {
-                    result = false;
-                    break;
-                }
-                if (shape[j][i] == 1 && content[x+i][y-j] != Color.BLACK)
-                    result = false;
-            }
-        }
-
-        if (result){
+        if (figureCheck(curFigure.shape,curFigure.x-1.f,curFigure.y))
             curFigure.x--;
-        }
+    }
+
+    void tryRight() {
+        if (figureCheck(curFigure.shape, curFigure.x + 1.f, curFigure.y))
+            curFigure.x++;
+    }
+
+    void tryRotate() {
+        int[][] newShape = new int[4][4];
+        //mirroring and transposing matrix is the way to rotate figure
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                newShape[3-i][j] = curFigure.shape[j][i];
+
+        if (figureCheck(newShape,curFigure.x,curFigure.y))
+            curFigure.shape = newShape;
 
     }
 }

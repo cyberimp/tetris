@@ -16,6 +16,8 @@ public class GdxTetris extends Game {
 	Texture back;
 	Texture gameover;
 
+	HighScoreAdapter adapter;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -25,8 +27,13 @@ public class GdxTetris extends Game {
 		brick = new Texture("brick.png");
 		gameover = new Texture("gameover.png");
 		Gdx.input.setCatchBackKey(true);
+		adapter.signIn();
 		this.setScreen(new MainMenuScreen(this));
 
+	}
+
+	void setAdapter(HighScoreAdapter context){
+		this.adapter = context;
 	}
 
 	@Override

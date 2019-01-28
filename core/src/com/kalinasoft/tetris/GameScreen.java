@@ -1,7 +1,6 @@
 package com.kalinasoft.tetris;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,18 +8,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameScreen implements Screen{
+class GameScreen implements Screen{
     private final GdxTetris game;
     private final OrthographicCamera camera;
-    private Viewport viewport;
+    private final Viewport viewport;
 
-    private Stakan stakan;
-    private GameOverBanner banner;
+    private final Stakan stakan;
+    private final GameOverBanner banner;
 
-    private Music bgm;
+    private final Music bgm;
     private boolean isGameOver =false;
 
-    private InputHandler inputHandler;
+    private final InputHandler inputHandler;
 
 
 
@@ -53,7 +52,14 @@ public class GameScreen implements Screen{
         InputHandler.INPUT input = inputHandler.consume();
         while(input!=null){
             switch (input){
-                case LEFT: stakan.tryLeft();
+                case LEFT:
+                    stakan.tryLeft();
+                    break;
+                case RIGHT:
+                    stakan.tryRight();
+                    break;
+                case ROTATE:
+                    stakan.tryRotate();
             }
             input = inputHandler.consume();
         }

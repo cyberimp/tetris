@@ -12,11 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 
-public class MainMenuScreen implements Screen {
+class MainMenuScreen implements Screen {
 
     private final GdxTetris game;
     private final Stage stage;
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
 
 
     MainMenuScreen(final GdxTetris game) {
@@ -43,8 +43,9 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-                game.setScreen(new HighScoreScreen(game));
-                dispose();
+                //game.setScreen(new HighScoreScreen(game));
+                //dispose();
+                game.adapter.show();
             }
         });
 

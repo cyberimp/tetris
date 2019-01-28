@@ -2,7 +2,7 @@ package com.kalinasoft.tetris;
 
 import com.badlogic.gdx.Screen;
 
-public class HighScoreScreen implements Screen {
+class HighScoreScreen implements Screen {
     private final GdxTetris game;
 
     HighScoreScreen(final GdxTetris game) {

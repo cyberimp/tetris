@@ -18,8 +18,7 @@ android {
     }
     defaultConfig {
         applicationId "com.kalinasoft.tetris"
-        //noinspection MinSdkTooLow
-        minSdkVersion 9
+        minSdkVersion 14
         //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
@@ -30,6 +29,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    dependencies {
+        implementation "com.google.android.gms:play-services-auth:16.0.1"
+        implementation "com.google.android.gms:play-services-games:16.0.0"
     }
 }
 

@@ -8,7 +8,7 @@ public class Figure {
 
     private final GdxTetris game;
 
-    private static int[][][] proto = {
+    private static final int[][][] proto = {
             {
                     {0,0,0,0},
                     {0,1,1,0},

@@ -8,12 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-public class DonationsScreen implements Screen {
+class DonationsScreen implements Screen {
 
-    final GdxTetris game;
+    private final GdxTetris game;
     private final Stage stage;
     private final Table table;
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
 
     DonationsScreen(final GdxTetris game){
         this.game = game;
