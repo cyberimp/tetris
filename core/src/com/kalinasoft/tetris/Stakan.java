@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 class Stakan {
@@ -12,10 +13,12 @@ class Stakan {
     final private Color content[][];
 
     private final GdxTetris game;
+    private long score = 0;
 
     private Figure nextFigure;
     private Figure curFigure;
     final private Color[] random = {Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
+    private final DecimalFormat df;
 
     Stakan(GdxTetris game){
         this.game = game;
@@ -32,12 +35,14 @@ class Stakan {
         nextFigure.color = random[MathUtils.random(4)];
         curFigure.spawn();
 
+        df = new DecimalFormat();
+        df.applyPattern("0000000000");
     }
 
     void draw(SpriteBatch batch){
         batch.setColor(Color.YELLOW);
         game.font.draw(batch,"NEXT",172,318);
-        game.font.draw(batch,"SCORE: 1'000'000'000",0,350);
+        game.font.draw(batch,"SCORE: "+df.format(score),0,350);
 
         batch.draw(game.back,0,0);
         for (int x=0;x<10;x++)
@@ -60,8 +65,10 @@ class Stakan {
         if (canMoveDown(delta*3))
             curFigure.moveDown(delta*3 );
         else {
-            if (!freeze(curFigure))
+            if (!freeze(curFigure)) {
+                game.adapter.add(score);
                 return true;
+            }
             curFigure = nextFigure;
             curFigure.spawn();
             nextFigure = new Figure(game);
@@ -92,6 +99,7 @@ class Stakan {
                 }
             }
         }
+        score += 15;
         return result;
     }
 

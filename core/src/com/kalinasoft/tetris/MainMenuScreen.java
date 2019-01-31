@@ -17,6 +17,7 @@ class MainMenuScreen implements Screen {
     private final GdxTetris game;
     private final Stage stage;
     private final OrthographicCamera camera;
+    private final TextButton hiScore;
 
 
     MainMenuScreen(final GdxTetris game) {
@@ -38,13 +39,12 @@ class MainMenuScreen implements Screen {
                                     dispose();
                                 }
                             });
-        TextButton hiScore = new TextButton("High score", game.skin);
+        hiScore = new TextButton("High score", game.skin);
+        hiScore.setDisabled(true);
         hiScore.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-                //game.setScreen(new HighScoreScreen(game));
-                //dispose();
                 game.adapter.show();
             }
         });
@@ -82,7 +82,10 @@ class MainMenuScreen implements Screen {
 
         camera.update();
 
-
+        if (hiScore.isDisabled()) {
+            if (game.adapter.checkReady())
+                hiScore.setDisabled(false);
+        }
         stage.act(delta);
         stage.draw();
 

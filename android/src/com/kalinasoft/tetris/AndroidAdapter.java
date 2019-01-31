@@ -56,14 +56,19 @@ public class AndroidAdapter implements HighScoreAdapter {
     }
 
     @Override
+    public boolean checkReady() {
+        return ready;
+    }
+
+    @Override
     public boolean add(long score) {
         if (!ready)
             return false;
         GoogleSignInAccount sa = GoogleSignIn.getLastSignedInAccount(context);
         if (sa == null)
             return false;
-        Games.getLeaderboardsClient(context, sa).
-                submitScore(context.getString(R.string.leaderboard_high_score),score);
+        Games.getLeaderboardsClient(context, sa)
+                .submitScore(context.getString(R.string.leaderboard_high_score),score);
         return true;
     }
 
