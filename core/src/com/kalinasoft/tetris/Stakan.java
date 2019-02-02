@@ -3,6 +3,7 @@ package com.kalinasoft.tetris;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.text.DecimalFormat;
@@ -15,13 +16,22 @@ class Stakan {
     private final GdxTetris game;
     private long score = 0;
 
+    private int[] dirty;
+    private float rowWidth = 80f;
+    private boolean falling = true;
+
     private Figure nextFigure;
     private Figure curFigure;
+    private ShapeRenderer shape;
+    private Color back = new Color(0.2f, 0.2f, 0.2f, 1);
     final private Color[] random = {Color.BLUE, Color.RED, Color.WHITE, Color.GREEN, Color.YELLOW};
     private final DecimalFormat df;
 
+
     Stakan(GdxTetris game){
         this.game = game;
+        shape = new ShapeRenderer();
+        dirty = new int[4];
         content = new Color[10][20];
         for (int x = 0; x<10; x++)
             for (int y=0;y<20;y++)
@@ -51,8 +61,21 @@ class Stakan {
                     batch.setColor(content[x][y]);
                     batch.draw(game.brick,x*16+2,y*16+2);
                 }
-                nextFigure.draw(batch);
-                curFigure.draw(batch);
+        nextFigure.draw(batch);
+        curFigure.draw(batch);
+        if (!falling) {
+            batch.end();
+            shape.setProjectionMatrix(batch.getProjectionMatrix());
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            shape.setColor(back);
+            for (int i = 0; (i < 4) && dirty[i] < 20; i++) {
+                shape.rect(82 - rowWidth / 2, dirty[i] * 16 + 2, rowWidth, 16);
+            }
+
+            shape.end();
+
+            batch.begin();
+        }
         batch.setColor(Color.WHITE);
     }
 
@@ -62,20 +85,77 @@ class Stakan {
      * @return true if game over
      */
     boolean update(float delta) {
-        if (canMoveDown(delta*3))
-            curFigure.moveDown(delta*3 );
-        else {
-            if (!freeze(curFigure)) {
-                game.adapter.add(score);
-                return true;
+        if (falling) {
+            if (canMoveDown(delta * 3))
+                curFigure.moveDown(delta * 3);
+            else {
+                if (!freeze(curFigure)) {
+                    game.adapter.add(score);
+                    return true;
+                }
+                if (rowCheck() == 0) {
+                    respawn();
+                }
+                else {
+                    rowWidth = 0f;
+                    falling = false;
+                }
             }
-            curFigure = nextFigure;
-            curFigure.spawn();
-            nextFigure = new Figure(game);
-            nextFigure.color = random[MathUtils.random(4)];
-            nextFigure.setCoords(10.5f,18);
+        }
+        else
+        {
+            rowWidth += delta *200f;
+            if (rowWidth >160f){
+                falling = true;
+                restack();
+                respawn();
+            }
         }
         return false;
+    }
+
+    private void restack() {
+        int i=0;
+        while (i<4 && dirty[i]<20){
+            for (int j = dirty[i]-i; j < 19; j++) {
+                for (int k = 0; k < 10; k++) {
+                    content[k][j] = content[k][j+1];
+                }
+            }
+            for (int j = 0; j < 10; j++) {
+                content[j][19] = Color.BLACK;
+            }
+            ++i;
+            score+=i*100;
+        }
+    }
+
+
+    private void respawn(){
+        curFigure = nextFigure;
+        curFigure.spawn();
+        nextFigure = new Figure(game);
+        nextFigure.color = random[MathUtils.random(4)];
+        nextFigure.setCoords(10.5f, 18);
+    }
+
+    private int rowCheck() {
+        int result = 0;
+        for (int i = 0; i < 4; i++)
+            dirty[i] = 20;
+        int row = 0;
+        for (int i = 0; i < 20; i++) {
+            boolean full = true;
+            for (int j = 0; j < 10; j++)
+                if (content[j][i] == Color.BLACK)
+                    full = false;
+            if (full) {
+                dirty[row] = i;
+                result++;
+                row++;
+            }
+        }
+        return result;
     }
 
     /**
@@ -147,16 +227,20 @@ class Stakan {
     }
 
     void tryLeft() {
-        if (figureCheck(curFigure.shape,curFigure.x-1.f,curFigure.y))
-            curFigure.x--;
+        if (falling)
+            if (figureCheck(curFigure.shape,curFigure.x-1.f,curFigure.y))
+                curFigure.x--;
     }
 
     void tryRight() {
-        if (figureCheck(curFigure.shape, curFigure.x + 1.f, curFigure.y))
-            curFigure.x++;
+        if (falling)
+            if (figureCheck(curFigure.shape, curFigure.x + 1.f, curFigure.y))
+                curFigure.x++;
     }
 
     void tryRotate() {
+        if (!falling)
+            return;
         int[][] newShape = new int[4][4];
         //mirroring and transposing matrix is the way to rotate figure
         for (int i = 0; i < 4; i++)
@@ -166,5 +250,9 @@ class Stakan {
         if (figureCheck(newShape,curFigure.x,curFigure.y))
             curFigure.shape = newShape;
 
+    }
+
+    void dispose(){
+        shape.dispose();
     }
 }
