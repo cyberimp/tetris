@@ -52,10 +52,10 @@ class DonationsScreen implements Screen, PurchaseObserver {
 
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(new InputAdapter(){
+
             @Override
-            public boolean keyTyped(char character) {
-                Gdx.app.log("Key",""+(int)character);
-                if (character == Input.Keys.BACK || character == Input.Keys.UNKNOWN) {
+            public boolean keyUp(int character) {
+                if (character == Input.Keys.BACK ) {
                     game.setScreen(new MainMenuScreen(game));
                     dispose();
                     return true;
@@ -70,12 +70,17 @@ class DonationsScreen implements Screen, PurchaseObserver {
 
 
         buttons = new IAPButton[5];
-        buttons[0] = new IAPButton("Plain donation\n15 RUB", game,sku[0]);
-        buttons[1] = new IAPButton("Magic donation\n50 RUB", game,"magic",sku[1]);
-        buttons[2] = new IAPButton("Rare donation\n100 RUB", game,"rare",sku[2]);
-        buttons[3] = new IAPButton("Epic donation\n300 RUB", game,"epic",sku[3]);
-        buttons[4] = new IAPButton("Legendary donation\n1000 RUB", game,"legendary",sku[4]);
-        TextButton back = new TextButton("<--- BACK",game.skin);
+        buttons[0] = new IAPButton(game.bundle.get("donation_plain")+"\n"+
+                game.bundle.get("donation_plain_value"), game,sku[0]);
+        buttons[1] = new IAPButton(game.bundle.get("donation_magic")+"\n"+
+                game.bundle.get("donation_magic_value"), game,"magic",sku[1]);
+        buttons[2] = new IAPButton(game.bundle.get("donation_rare")+"\n"+
+                game.bundle.get("donation_rare_value"), game,"rare",sku[2]);
+        buttons[3] = new IAPButton(game.bundle.get("donation_epic")+"\n"+
+                game.bundle.get("donation_epic_value"), game,"epic",sku[3]);
+        buttons[4] = new IAPButton(game.bundle.get("donation_legendary")+"\n"+
+                game.bundle.get("donation_legendary_value"), game,"legendary",sku[4]);
+        TextButton back = new TextButton("<--- "+game.bundle.get("action_back"),game.skin);
         back.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

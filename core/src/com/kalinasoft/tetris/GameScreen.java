@@ -20,8 +20,7 @@ class GameScreen implements Screen{
     private boolean isGameOver =false;
 
     private final InputHandler inputHandler;
-
-
+    private float backTimer = 0f;
 
 
     GameScreen(final GdxTetris game){
@@ -60,11 +59,27 @@ class GameScreen implements Screen{
                     break;
                 case ROTATE:
                     stakan.tryRotate();
+                    break;
+                case DOWN:
+                    stakan.setTurbo();
+                    break;
+                case BACK:
+                    if(isGameOver||backTimer>0f){
+                        game.setScreen(new MainMenuScreen(game));
+                        dispose();
+                    }
+                    else {
+                        backTimer = 2f;
+                        game.adapter.toast();
+                    }
             }
             input = inputHandler.consume();
         }
-        if (!isGameOver)
+        if (!isGameOver) {
             isGameOver = stakan.update(delta);
+            if (backTimer > 0f)
+                backTimer-=delta;
+        }
         else
             banner.update(delta);
 

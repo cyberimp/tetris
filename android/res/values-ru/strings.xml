@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Кирпичи</string>
     <string name="signin_other_error">Ошибка входа Google Play — таблица рекордов недоступна</string>
+    <string name="action_repeat">Повторите для выхода</string>
 </resources>

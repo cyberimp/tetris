@@ -19,6 +19,7 @@ class Stakan {
     private int[] dirty;
     private float rowWidth = 80f;
     private boolean falling = true;
+    private float turbo =1f;
 
     private Figure nextFigure;
     private Figure curFigure;
@@ -51,8 +52,8 @@ class Stakan {
 
     void draw(SpriteBatch batch){
         batch.setColor(Color.YELLOW);
-        game.font.draw(batch,"NEXT",172,318);
-        game.font.draw(batch,"SCORE: "+df.format(score),0,350);
+        game.font.draw(batch,game.bundle.get("label_next"),172,318);
+        game.font.draw(batch,game.bundle.get("label_score")+": "+df.format(score),0,350);
 
         batch.draw(game.back,0,0);
         for (int x=0;x<10;x++)
@@ -86,8 +87,8 @@ class Stakan {
      */
     boolean update(float delta) {
         if (falling) {
-            if (canMoveDown(delta * 3))
-                curFigure.moveDown(delta * 3);
+            if (canMoveDown(delta * 3* turbo))
+                curFigure.moveDown(delta * 3 * turbo);
             else {
                 if (!freeze(curFigure)) {
                     game.adapter.add(score);
@@ -132,6 +133,7 @@ class Stakan {
 
 
     private void respawn(){
+        turbo = 1f;
         curFigure = nextFigure;
         curFigure.spawn();
         nextFigure = new Figure(game);
@@ -254,5 +256,9 @@ class Stakan {
 
     void dispose(){
         shape.dispose();
+    }
+
+    void setTurbo() {
+        turbo = 5f;
     }
 }

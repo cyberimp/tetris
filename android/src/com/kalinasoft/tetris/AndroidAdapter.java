@@ -2,8 +2,11 @@ package com.kalinasoft.tetris;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -16,6 +19,8 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.Locale;
 
 public class AndroidAdapter implements HighScoreAdapter {
 
@@ -88,6 +93,28 @@ public class AndroidAdapter implements HighScoreAdapter {
                     }
                 });
         return true;
+    }
+
+    @Override
+    public void toast() {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(context,R.string.action_repeat,Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public Locale getLocale() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return context.getResources().getConfiguration().getLocales().get(0);
+        }
+        else
+            //noinspection deprecation
+            return context.getResources().getConfiguration().locale;
     }
 
     private void startSignInIntent() {

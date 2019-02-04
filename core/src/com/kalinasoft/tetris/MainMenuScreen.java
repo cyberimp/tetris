@@ -1,6 +1,9 @@
 package com.kalinasoft.tetris;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,12 +28,29 @@ class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 240, 360);
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(new InputAdapter(){
+
+            @Override
+            public boolean keyUp(int character) {
+                if (character == Input.Keys.BACK ) {
+                    Gdx.app.exit();
+                    return true;
+                }
+                else
+                    return false;
+            }
+        });
+
+        Gdx.input.setInputProcessor(multiplexer);
         Table table = new Table();
         table.setFillParent(true);
-        Label title = new Label("BRICKS",game.skin);
-        TextButton newGame = new TextButton("New game", game.skin);
+        Label title = new Label(game.bundle.get("game"),game.skin);
+        TextButton newGame = new TextButton(game.bundle.get("action_new"), game.skin);
         newGame.addListener(new ChangeListener() {
                                 @Override
                                 public void changed(ChangeEvent event, Actor actor) {
@@ -39,7 +59,7 @@ class MainMenuScreen implements Screen {
                                     dispose();
                                 }
                             });
-        hiScore = new TextButton("High score", game.skin);
+        hiScore = new TextButton(game.bundle.get("action_leaderboards"), game.skin);
         hiScore.setDisabled(true);
         hiScore.addListener(new ChangeListener() {
             @Override
@@ -49,7 +69,7 @@ class MainMenuScreen implements Screen {
             }
         });
 
-        TextButton donate = new TextButton("Donations", game.skin, "epic");
+        TextButton donate = new TextButton(game.bundle.get("action_donations"), game.skin, "epic");
         donate.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
