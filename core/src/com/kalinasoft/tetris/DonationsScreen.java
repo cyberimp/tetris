@@ -1,19 +1,41 @@
 package com.kalinasoft.tetris;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.pay.Offer;
+import com.badlogic.gdx.pay.OfferType;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
+import com.badlogic.gdx.pay.PurchaseObserver;
+import com.badlogic.gdx.pay.Transaction;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-class DonationsScreen implements Screen {
+class DonationsScreen implements Screen, PurchaseObserver {
 
     private final GdxTetris game;
     private final Stage stage;
-    private final Table table;
     private final OrthographicCamera camera;
+    private boolean disabled = true;
+
+    private IAPButton[] buttons;
+
+    private static final String sku[] = {
+            "white_donation",
+            "green_donation",
+            "blue_donation",
+            "purple_donation",
+            "orange_donation"
+    };
 
     DonationsScreen(final GdxTetris game){
         this.game = game;
@@ -21,25 +43,53 @@ class DonationsScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 240, 360);
 
-        Gdx.input.setInputProcessor(stage);
-        TextButton normal = new TextButton("Plain donation\n15 RUB", game.skin);
-        TextButton magic = new TextButton("Magic donation\n50 RUB", game.skin,"magic");
-        TextButton rare = new TextButton("Rare donation\n100 RUB", game.skin,"rare");
-        TextButton epic = new TextButton("Epic donation\n300 RUB", game.skin,"epic");
-        TextButton legendary = new TextButton("Legendary donation\n1000 RUB", game.skin,"legendary");
+        PurchaseManagerConfig pmc = new PurchaseManagerConfig();
+        for (String id : sku)
+            pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(id));
+        this.game.purchaseManager.install(this,pmc,true);
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(new InputAdapter(){
+            @Override
+            public boolean keyTyped(char character) {
+                Gdx.app.log("Key",""+(int)character);
+                if (character == Input.Keys.BACK || character == Input.Keys.UNKNOWN) {
+                    game.setScreen(new MainMenuScreen(game));
+                    dispose();
+                    return true;
+                }
+                else
+                    return false;
+            }
+        });
+
+        Gdx.input.setInputProcessor(multiplexer);
+
+
+
+        buttons = new IAPButton[5];
+        buttons[0] = new IAPButton("Plain donation\n15 RUB", game,sku[0]);
+        buttons[1] = new IAPButton("Magic donation\n50 RUB", game,"magic",sku[1]);
+        buttons[2] = new IAPButton("Rare donation\n100 RUB", game,"rare",sku[2]);
+        buttons[3] = new IAPButton("Epic donation\n300 RUB", game,"epic",sku[3]);
+        buttons[4] = new IAPButton("Legendary donation\n1000 RUB", game,"legendary",sku[4]);
         TextButton back = new TextButton("<--- BACK",game.skin);
-        table = new Table();
+        back.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            }
+        });
+        Table table = new Table();
         table.setFillParent(true);
-        table.add(normal).width(300).padBottom(30);
-        table.row();
-        table.add(magic).width(300).padBottom(30);
-        table.row();
-        table.add(rare).width(300).padBottom(30);
-        table.row();
-        table.add(epic).width(300).padBottom(30);
-        table.row();
-        table.add(legendary).width(300).padBottom(30);
-        table.row();
+        for (int i = 0; i < 5; i++) {
+            buttons[i].setDisabled(true);
+            table.add(buttons[i]).width(300).padBottom(30);
+            table.row();
+        }
         table.add(back).width(300).padBottom(30);
         stage.addActor(table);
     }
@@ -47,6 +97,12 @@ class DonationsScreen implements Screen {
     @Override
     public void show() {
 
+    }
+
+    private void buttonsEnable(){
+        for (int i = 0; i < 5; i++) {
+            buttons[i].setDisabled(false);
+        }
     }
 
     @Override
@@ -57,6 +113,12 @@ class DonationsScreen implements Screen {
 
         camera.update();
 
+        if (disabled){
+            if (game.purchaseManager.installed()){
+                buttonsEnable();
+                disabled = false;
+            }
+        }
 
         stage.act(delta);
         stage.draw();
@@ -87,5 +149,41 @@ class DonationsScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    @Override
+    public void handleInstall() {
+        Gdx.app.log("IAP","installed");
+
+    }
+
+    @Override
+    public void handleInstallError(Throwable e) {
+
+    }
+
+    @Override
+    public void handleRestore(Transaction[] transactions) {
+
+    }
+
+    @Override
+    public void handleRestoreError(Throwable e) {
+
+    }
+
+    @Override
+    public void handlePurchase(Transaction transaction) {
+        Gdx.app.log("IAP",transaction.toString());
+    }
+
+    @Override
+    public void handlePurchaseError(Throwable e) {
+
+    }
+
+    @Override
+    public void handlePurchaseCanceled() {
+
     }
 }

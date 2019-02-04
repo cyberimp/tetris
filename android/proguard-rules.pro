@@ -30,6 +30,13 @@
 
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
 
+-keep class com.android.vending.billing.**
+-keep class com.amazon.** {*;}
+-keep class com.sec.android.iap.**
+-keep class com.nokia.payment.iap.aidl.**
+-keep class com.badlogic.gdx.pay.android.** { *; }
+-dontwarn org.onepf.oms.appstore.FortumoBillingService
+
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
 }

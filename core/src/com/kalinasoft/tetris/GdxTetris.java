@@ -5,10 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class GdxTetris extends Game {
-	SpriteBatch batch;
+	PurchaseManager purchaseManager;
+    SpriteBatch batch;
 	BitmapFont font;
 	Skin skin;
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.pay.android.googleplay.AndroidGooglePlayPurchaseManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -24,6 +25,7 @@ public class AndroidLauncher extends AndroidApplication {
         highscore = new AndroidAdapter(this);
 		GdxTetris game = new GdxTetris();
 		game.setAdapter(highscore);
+        game.purchaseManager = new AndroidGooglePlayPurchaseManager(this, 0);
 		initialize(game, config);
 
 	}
